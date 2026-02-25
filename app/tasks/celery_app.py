@@ -5,6 +5,7 @@ celery_app = Celery(
     "viralmind",
     broker=settings.REDIS_URL,
     backend=settings.REDIS_URL,
+    include=["app.tasks.worker"],
 )
 
 celery_app.conf.update(
