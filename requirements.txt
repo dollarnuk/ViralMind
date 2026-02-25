@@ -1,0 +1,17 @@
+fastapi
+uvicorn[standard]
+yt-dlp
+pydantic
+pydantic-settings
+python-dotenv
+celery
+redis
+scenedetect[opencv]
+librosa
+mediapipe
+numpy
+opencv-python-headless
+pydub
+aiohttp
+jinja2
+python-multipart
