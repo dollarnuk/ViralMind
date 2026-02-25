@@ -9,9 +9,9 @@
 **Технологічний стек**:
 - Backend: Python 3.10, FastAPI, Celery
 - База даних: Redis (для черг та тимчасових даних)
-- Frontend: Vanilla JS + CSS (Apple-like design) - *у розробці*
+- Frontend: Vanilla JS + CSS (Premium Dark Glassmorphism)
 - AI/ML: PySceneDetect, MediaPipe, Librosa
-- Деплой: Docker, EasyPanel
+- Деплой: Docker, Docker Compose
 - Інше: FFmpeg, yt-dlp
 
 **Структура файлів проєкту**:
@@ -35,15 +35,17 @@ ViralMind/
 
 **Головні можливості**:
 - Автоматичне завантаження відео за URL (YouTube та інші).
+- Пряме завантаження MP4/MOV файлів з комп'ютера.
 - Визначення "вірусних" моментів за зміною сцен та рівнем звуку.
 - Розумне кадрування (9:16) з фокусом на обличчях (MediaPipe).
 - Автоматична генерація Shorts за допомогою FFmpeg.
-- Інтеграція з n8n через API.
+- Інтеграція з n8n через API (webhook support).
 
 **API ендпоінти**:
 ```text
-- POST /api/v1/process-video - Запустити обробку відео
-- GET /api/v1/task-status/{task_id} - Перевірити статус завдання
+- POST /api/v1/process-video - Запустити обробку за URL
+- POST /api/v1/upload-video - Завантажити файл з ПК та почати обробку
+- GET /api/v1/task-status/{task_id} - Перевірити статус та прогрес завдання
 ```
 
 **Змінні оточення (.env)**:
@@ -81,10 +83,11 @@ docker-compose up -d --build
 - Пріоритет на **Open Source** інструменти (FFmpeg, yt-dlp).
 
 **Що заплановано / в розробці**:
-- [ ] Реалізація аналізу вірусності (Scene Change + Audio).
-- [ ] Розумне кадрування 9:16.
-- [ ] Apple-like Web UI.
-- [ ] Повна інтеграція з n8n (webhooks).
+- [x] Реалізація аналізу вірусності (Scene Change + Audio).
+- [x] Розумне кадрування 9:16.
+- [x] Apple-like Premium Web UI.
+- [x] Завантаження відео з ПК.
+- [x] Повна інтеграція з n8n (webhooks).
 
 ---
 
