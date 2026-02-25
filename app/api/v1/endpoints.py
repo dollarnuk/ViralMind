@@ -31,10 +31,22 @@ async def get_task_status(task_id: str):
     Check the status of a video processing task from Celery.
     """
     from app.tasks.celery_app import celery_app
-    res = celery_app.AsyncResult(task_id)
-    
-    return {
-        "task_id": task_id,
-        "status": res.status,
-        "result": res.result if res.ready() else res.info
-    }
+    try:
+        res = celery_app.AsyncResult(task_id)
+        
+        # Safely get status and result
+        status = res.status
+        result = res.result if res.ready() else res.info
+        
+        return {
+            "task_id": task_id,
+            "status": status,
+            "result": result
+        }
+    except Exception as e:
+        # Fallback for malformed results
+        return {
+            "task_id": task_id,
+            "status": "FAILURE",
+            "result": {"error": f"Internal task error: {str(e)}"}
+        }
