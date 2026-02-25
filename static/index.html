@@ -4,25 +4,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ViralMind — Viral Video Magic</title>
+    <title>ViralMind — AI Video magic</title>
     <link rel="stylesheet" href="/static/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
+    <div class="glass-bg"></div>
+    
     <div class="container">
-        <h1>ViralMind</h1>
-        <p style="color: #6e6e73; margin-bottom: 30px;">Перетворюйте довгі відео на вірусні Shorts миттєво.</p>
+        <header>
+            <div class="logo">ViralMind</div>
+            <p class="subtitle">Перетворюйте довгі відео на вірусні Shorts миттєво за допомогою штучного інтелекту.</p>
+        </header>
 
-        <div class="input-group">
-            <input type="text" id="videoUrl" placeholder="Вставте посилання на відео (YouTube, TikTok...)">
-        </div>
+        <main>
+            <div class="input-card">
+                <div class="input-group">
+                    <input type="text" id="videoUrl" placeholder="Вставте посилання на YouTube або TikTok...">
+                    <button id="generateBtn">Згенерувати</button>
+                </div>
 
-        <button id="generateBtn">Згенерувати Shorts</button>
+                <div class="divider">
+                    <span>або</span>
+                </div>
 
-        <div id="loader" class="loader"></div>
-        <div id="status">Додайте посилання, щоб розпочати</div>
+                <div id="dropZone" class="drop-zone">
+                    <div class="drop-zone__prompt">
+                        <div class="icon">📁</div>
+                        <p>Перетягніть відео сюди або <span>виберіть файл</span></p>
+                        <small>MP4, MOV до 50MB</small>
+                    </div>
+                    <input type="file" name="videoFile" id="videoFile" class="drop-zone__input" accept="video/*">
+                </div>
+            </div>
 
-        <div id="results" class="results"></div>
+            <div id="processingSection" style="display: none;">
+                <div class="loader-container">
+                    <div class="spinner"></div>
+                    <div id="status">Обробка...</div>
+                </div>
+                <div class="progress-bar">
+                    <div id="progressFill" class="progress-fill" style="width: 0%;"></div>
+                </div>
+            </div>
+
+            <div id="results" class="results-grid"></div>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 ViralMind AI. Усі права захищені.</p>
+        </footer>
     </div>
 
     <script src="/static/script.js"></script>

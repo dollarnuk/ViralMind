@@ -26,10 +26,14 @@ def process_video_task(self, video_url: str, num_shorts: int = 3, webhook_url: s
         self.update_state(state=state, meta={'progress': progress})
 
     try:
-        # Step 1: Download
-        update_progress("DOWNLOADING", 10)
-        logger.info("Downloading video...")
-        file_path = downloader.download(video_url)
+        # Step 1: Download or Use local file
+        if os.path.exists(video_url):
+            logger.info(f"Using local file: {video_url}")
+            file_path = video_url
+        else:
+            update_progress("DOWNLOADING", 10)
+            logger.info("Downloading video...")
+            file_path = downloader.download(video_url)
         
         # Step 2-4: Analysis, Cropping, Generation via ShortsGenerator
         from app.services.shorts_generator import shorts_generator

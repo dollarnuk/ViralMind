@@ -1,6 +1,13 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, UploadFile, File
+import shutil
+import os
+import uuid
 from app.schemas.video_request import VideoRequest, VideoResponse
 from app.tasks.worker import process_video_task
+from app.core.config import settings
+import logging
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -24,6 +31,45 @@ async def process_video(request: VideoRequest) -> VideoResponse:
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/upload-video", response_model=VideoResponse)
+async def upload_video(file: UploadFile = File(...)) -> VideoResponse:
+    """
+    Endpoint to upload a video file and trigger processing.
+    """
+    if not file.filename.lower().endswith(('.mp4', '.mov', '.avi', '.mkv')):
+        raise HTTPException(status_code=400, detail="Unsupported file format")
+    
+    try:
+        # Create a unique filename in the downloads directory
+        file_id = str(uuid.uuid4())
+        ext = os.path.splitext(file.filename)[1]
+        local_filename = f"{file_id}{ext}"
+        local_path = os.path.join(settings.DOWNLOAD_DIR, local_filename)
+        
+        # Ensure directory exists
+        os.makedirs(settings.DOWNLOAD_DIR, exist_ok=True)
+        
+        # Save the file
+        with open(local_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        
+        # Trigger the celery task with local_path instead of URL
+        # We'll pass it as video_url but logic in worker will handle it
+        task = process_video_task.delay(
+            video_url=local_path, # Local path starts with 'downloads/'
+            num_shorts=3
+        )
+        
+        return VideoResponse(
+            task_id=task.id,
+            status="queued",
+            message="Upload successful, processing started"
+        )
+        
+    except Exception as e:
+        logger.error(f"Upload failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Upload failed: {str(e)}")
 
 @router.get("/task-status/{task_id}")
 async def get_task_status(task_id: str):

@@ -24,6 +24,7 @@ services:
       - .:/app
       - downloads:/app/downloads
       - output:/app/output
+      - ./cookies.txt:/app/cookies.txt
     environment:
       - REDIS_URL=redis://redis:6379/0
     depends_on:
