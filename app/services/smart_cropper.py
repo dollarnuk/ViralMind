@@ -1,6 +1,6 @@
 import logging
 import cv2
-import mediapipe as mp
+import mediapipe.solutions.face_detection as mp_face_detection
 import subprocess
 import os
 import numpy as np
@@ -17,8 +17,7 @@ class SmartCropper:
 
     def __init__(self, sample_interval: float = 0.5):
         self.sample_interval = sample_interval
-        self.mp_face_detection = mp.solutions.face_detection
-        self.face_detection = self.mp_face_detection.FaceDetection(
+        self.face_detection = mp_face_detection.FaceDetection(
             model_selection=1,  # Full range model (better for distant faces)
             min_detection_confidence=0.5
         )
