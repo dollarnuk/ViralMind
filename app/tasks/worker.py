@@ -65,7 +65,12 @@ def process_video_task(self, video_url: str, num_shorts: int = 3, webhook_url: s
         
     except Exception as e:
         logger.error(f"Task failed: {str(e)}")
-        # update_state is handled by celery on failure, but we can add meta
+        # Update state with error before raising
+        self.update_state(
+            state='FAILURE',
+            meta={'error': str(e)}
+        )
+        raise e
 
 @celery_app.task(name="cleanup_old_files")
 def cleanup_old_files():
