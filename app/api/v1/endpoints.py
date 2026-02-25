@@ -33,10 +33,17 @@ async def get_task_status(task_id: str):
     from app.tasks.celery_app import celery_app
     try:
         res = celery_app.AsyncResult(task_id)
-        
-        # Safely get status and result
         status = res.status
         result = res.result if res.ready() else res.info
+        
+        # If task failed, ensure 'error' field is present for frontend
+        if status == "FAILURE":
+            if isinstance(result, Exception):
+                result = {"error": str(result)}
+            elif isinstance(result, dict) and "error" not in result:
+                # Celery sometimes stores exception info in different keys
+                error_msg = result.get("exc_message") or str(result)
+                result = {"error": error_msg}
         
         return {
             "task_id": task_id,
@@ -44,7 +51,7 @@ async def get_task_status(task_id: str):
             "result": result
         }
     except Exception as e:
-        # Fallback for malformed results
+        logger.error(f"Error fetching task status: {str(e)}")
         return {
             "task_id": task_id,
             "status": "FAILURE",
